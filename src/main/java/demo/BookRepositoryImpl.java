@@ -30,9 +30,9 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author Greg Turnquist
  */
-public class BookRepositoryImplOffline implements BookRepository {
+public class BookRepositoryImpl implements BookRepository {
 
-  private final static Logger log = LoggerFactory.getLogger(BookRepositoryImplOffline.class);
+  private final static Logger log = LoggerFactory.getLogger(BookRepositoryImpl.class);
 
   private AtomicLong bookCounter = new AtomicLong(0L);
 
@@ -136,6 +136,13 @@ public class BookRepositoryImplOffline implements BookRepository {
 
   @Override
   public Book findByUserUsernameAndId(@Param("username") String username, @Param("id") Long id) {
-    return null;
+
+    Book thisBook = this.books.get(id);
+    if (thisBook.getUser().getUsername().equals(username)) {
+      return thisBook;
+    } else {
+      return null;
+    }
+
   }
 }
