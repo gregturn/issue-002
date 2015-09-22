@@ -18,6 +18,12 @@ package demo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @author Greg Turnquist
  */
@@ -25,69 +31,103 @@ public class BookRepositoryImpl implements BookRepository {
 
   private final static Logger log = LoggerFactory.getLogger(BookRepositoryImpl.class);
 
+  private AtomicLong bookCounter = new AtomicLong(0L);
+
+  private Map<Long, Book> books = new HashMap<>();
+
   @Override
   public Book save(Book entity) {
+
     log.debug("Saving book " + entity.getTitle());
-    return null;
+    entity.setId(bookCounter.incrementAndGet());
+    this.books.put(entity.getId(), entity);
+    return this.books.get(entity.getId());
   }
 
   @Override
   public <S extends Book> Iterable<S> save(Iterable<S> entities) {
+
     log.debug("Saving iterable list of books");
-    return null;
+    List<S> savedBooks = new ArrayList<>();
+    for (S entity : entities) {
+      entity.setId(bookCounter.incrementAndGet());
+      this.books.put(entity.getId(), entity);
+      savedBooks.add(entity);
+    }
+    return savedBooks;
   }
 
   @Override
   public Book findOne(Long aLong) {
+
     log.debug("Saving book " + aLong);
-    return null;
+    return this.books.get(aLong);
   }
 
   @Override
   public boolean exists(Long aLong) {
+
     log.debug("Does " + aLong + " exist?");
-    return false;
+    return this.books.containsKey(aLong);
   }
 
   @Override
   public Iterable<Book> findAll() {
+
     log.debug("Finding all books");
-    return null;
+    return this.books.values();
   }
 
   @Override
   public Iterable<Book> findAll(Iterable<Long> longs) {
+
     log.debug("Finding all books from a subset");
-    return null;
+    List<Book> books = new ArrayList<>();
+    for (Long id : longs) {
+      for (Book book : this.books.values()) {
+        if (book.getId() == id) {
+          books.add(book);
+        }
+      }
+    }
+    return books;
   }
 
   @Override
   public long count() {
+
     log.debug("Counting books");
-    return 0;
+    return this.books.size();
   }
 
   @Override
   public void delete(Long aLong) {
-    log.debug("Deleting book " + aLong);
 
+    log.debug("Deleting book " + aLong);
+    this.books.remove(aLong);
   }
 
   @Override
   public void delete(Book entity) {
+
     log.debug("Deleting book " + entity.getTitle());
+    this.books.remove(entity.getId());
 
   }
 
   @Override
   public void delete(Iterable<? extends Book> entities) {
-    log.debug("Deleting iterable list of books.");
 
+    log.debug("Deleting iterable list of books.");
+    for (Book book : entities) {
+      this.books.remove(book.getId());
+    }
   }
 
   @Override
   public void deleteAll() {
-    log.debug("Deleting all books.");
 
+    log.debug("Deleting all books.");
+    this.books = new HashMap<>();
   }
 }
