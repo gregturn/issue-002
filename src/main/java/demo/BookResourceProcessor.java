@@ -15,12 +15,11 @@
  */
 package demo;
 
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.Resources;
 import org.springframework.stereotype.Component;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 /**
  * @author Greg Turnquist
@@ -30,7 +29,7 @@ public class BookResourceProcessor implements ResourceProcessor<Resources<Resour
 
   @Override
   public Resources<Resource<Book>> process(Resources<Resource<Book>> resource) {
-    resource.add(linkTo(methodOn(ApplicationController.class).findByUserUsernameAndId("", 0L)).withRel("cool"));
+    resource.add(new Link("/users/{username}/books/{id}").withRel("findByUserUsernameAndId"));
     return resource;
   }
 
