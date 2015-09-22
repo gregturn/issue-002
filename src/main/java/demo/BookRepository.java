@@ -16,9 +16,13 @@
 package demo;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  * @author Greg Turnquist
  */
 public interface BookRepository extends CrudRepository<Book, Long> {
+
+  public Book findByUserUsernameAndId(@Param("username") String username, @Param("id") Long id);
+
 }

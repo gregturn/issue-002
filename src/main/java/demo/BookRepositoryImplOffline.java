@@ -17,6 +17,7 @@ package demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.query.Param;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,11 +26,13 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
+ * TODO: To bring this solution online, rename withou the "Offline suffix.
+ *
  * @author Greg Turnquist
  */
-public class BookRepositoryImpl implements BookRepository {
+public class BookRepositoryImplOffline implements BookRepository {
 
-  private final static Logger log = LoggerFactory.getLogger(BookRepositoryImpl.class);
+  private final static Logger log = LoggerFactory.getLogger(BookRepositoryImplOffline.class);
 
   private AtomicLong bookCounter = new AtomicLong(0L);
 
@@ -129,5 +132,10 @@ public class BookRepositoryImpl implements BookRepository {
 
     log.debug("Deleting all books.");
     this.books = new HashMap<>();
+  }
+
+  @Override
+  public Book findByUserUsernameAndId(@Param("username") String username, @Param("id") Long id) {
+    return null;
   }
 }
